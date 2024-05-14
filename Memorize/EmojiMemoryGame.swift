@@ -45,7 +45,7 @@ class EmojiMemoryGame: ObservableObject {
         model = EmojiMemoryGame.createMemoryGame(fromTheme: newTheme)
     }
     
-    enum Theme : String, CaseIterable, Identifiable {
+    enum Theme: String {
         case faces = "Faces"
         case animals = "Animals"
         case weather = "Weather"
@@ -60,18 +60,5 @@ class EmojiMemoryGame: ObservableObject {
                 return ["🌩️", "🌨️", "🌤️", "☀️", "⛅️", "☁️", "🌧️", "🌦️", "⛈️"]
             }
         }
-        
-        var cardPairsCount: Int {
-            switch self {
-            case .faces:
-                return 6
-            case .animals:
-                return 5
-            case .weather:
-                return 4
-            }
-        }
-        
-        var id: String { self.rawValue }
     }
 }
