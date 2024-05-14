@@ -8,57 +8,65 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis: [String] = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
-    
     @State var cardCount: Int = 4
+    @State var theme: Theme = .halloween
     
     var body: some View {
         VStack {
+            title
             ScrollView {
                 cards
             }
-            Spacer()
-            cardCountAdjusters
+            themeSelector
         }
         .padding()
+    }
+    
+    var title: some View {
+        Text("Memorize!")
+            .font(.largeTitle)
     }
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
             ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: emojis[index])
+                CardView(content: theme.emojis[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }
         .foregroundColor(.orange)
     }
     
-    var cardCountAdjusters: some View {
-        HStack {
-            cardRemover
-            Spacer()
-            cardAdder
+    var themeSelector: some View {
+        VStack(spacing: 0) {
+            Text("Select Theme: ")
+            Picker(selection: $theme, label: Text("Theme")) {
+                ForEach(Theme.allCases) { theme in
+                    Text(theme.rawValue).tag(theme)
+                }
+            }
         }
-        .imageScale(.large)
-        .font(.largeTitle)
+    }
+}
+
+
+enum Theme : String, CaseIterable, Identifiable {
+    case halloween = "Halloween"
+    case christmas = "Christmas"
+    case easter = "Easter"
+    
+    var emojis: [String] {
+        switch self {
+        case .halloween:
+            return ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
+        case .christmas:
+            return ["🎄", "🎅", "🇨🇽", "🦌", "⛄️", "❄️", "🏂", "🍧", "🌨️", "🎁", "🤶", "🎿"]
+        case .easter:
+            return ["🥚", "🐰", "🐇", "🧺", "🧆", "🥙", "🐤", "🐣", "🐥", "🏃", "👀", "🕵️"]
+        }
     }
     
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
-    }
+    var id: String { self.rawValue }
 }
 
 
