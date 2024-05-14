@@ -16,7 +16,7 @@ struct ContentView: View {
             ScrollView {
                 cards
             }
-            themeSelector
+            themes
         }
         .padding()
     }
@@ -47,17 +47,17 @@ struct ContentView: View {
         return allCardValues.shuffled()
     }
     
-    var themeSelector: some View {
+    func themeSelector(toTheme newTheme: Theme, image: Image) -> some View{
+        VStackLabeledButton(label: newTheme.rawValue, image: image) {
+            theme = newTheme
+        }
+    }
+    
+    var themes: some View {
         HStack(spacing: 50) {
-            VStackLabeledButton(label: "Faces", image: Image(systemName: "face.smiling")) {
-                theme = Theme.faces
-            }
-            VStackLabeledButton(label: "Animals", image: Image(systemName: "hare")) {
-                theme = Theme.animals
-            }
-            VStackLabeledButton(label: "Weather", image: Image(systemName: "sun.max")) {
-                theme = Theme.weather
-            }
+            themeSelector(toTheme: Theme.faces, image: Image(systemName: "face.smiling"))
+            themeSelector(toTheme: Theme.animals, image: Image(systemName: "hare"))
+            themeSelector(toTheme: Theme.weather, image: Image(systemName: "sun.max"))
         }
         .font(.largeTitle)
     }
