@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var cardCount: Int = 4
-    @State var theme: Theme = .halloween
+    @State var theme: Theme = .faces
     
     var body: some View {
         VStack {
@@ -28,51 +27,97 @@ struct ContentView: View {
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: theme.emojis[index])
+        let deck = getDeck(fromTheme: theme)
+        
+        return LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]) {
+            ForEach(deck.indices, id: \.self) { index in
+                CardView(content: deck[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }
         .foregroundColor(.orange)
     }
     
+    func getDeck(fromTheme theme: Theme) -> [String] {
+        var uniqueCardValues = Set<String>()
+        while uniqueCardValues.count < theme.cardPairsCount {
+            uniqueCardValues.insert(theme.emojis.randomElement()!)
+        }
+        let allCardValues: [String] = Array(uniqueCardValues) + Array(uniqueCardValues)
+        return allCardValues.shuffled()
+    }
+    
     var themeSelector: some View {
-        VStack(spacing: 0) {
-            Text("Select Theme: ")
-            Picker(selection: $theme, label: Text("Theme")) {
-                ForEach(Theme.allCases) { theme in
-                    Text(theme.rawValue).tag(theme)
-                }
+        HStack(spacing: 50) {
+            VStackLabeledButton(label: "Faces", image: Image(systemName: "face.smiling")) {
+                theme = Theme.faces
+            }
+            VStackLabeledButton(label: "Animals", image: Image(systemName: "hare")) {
+                theme = Theme.animals
+            }
+            VStackLabeledButton(label: "Weather", image: Image(systemName: "sun.max")) {
+                theme = Theme.weather
             }
         }
+        .font(.largeTitle)
     }
 }
 
 
 enum Theme : String, CaseIterable, Identifiable {
-    case halloween = "Halloween"
-    case christmas = "Christmas"
-    case easter = "Easter"
+    case faces = "Faces"
+    case animals = "Animals"
+    case weather = "Weather"
     
     var emojis: [String] {
         switch self {
-        case .halloween:
-            return ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
-        case .christmas:
-            return ["🎄", "🎅", "🇨🇽", "🦌", "⛄️", "❄️", "🏂", "🍧", "🌨️", "🎁", "🤶", "🎿"]
-        case .easter:
-            return ["🥚", "🐰", "🐇", "🧺", "🧆", "🥙", "🐤", "🐣", "🐥", "🏃", "👀", "🕵️"]
+        case .faces:
+            return ["😃", "☹️", "🥹", "😂", "😉", "😘", "🤩", "😏", "😏", "😱", "😡", "😭"]
+        case .animals:
+            return ["🐶", "🐱", "🐭", "🐰", "🐸", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮"]
+        case .weather:
+            return ["🌩️", "🌨️", "🌤️", "☀️", "⛅️", "☁️", "🌧️", "🌦️", "⛈️"]
+        }
+    }
+    
+    var cardPairsCount: Int {
+        switch self {
+        case .faces:
+            return 6
+        case .animals:
+            return 5
+        case .weather:
+            return 4
         }
     }
     
     var id: String { self.rawValue }
 }
 
+struct VStackLabeledButton: View {
+    let label: String
+    let image: Image?
+    let action: (() -> Void)?
+    
+    var body: some View {
+        Button(action: {
+            if action != nil {
+                action!()
+            }
+        }, label: {
+            VStack {
+                if image != nil {
+                    image
+                }
+                Text(label).font(.body)
+            }
+        })
+    }
+}
 
 struct CardView: View {
     let content: String
-    @State var isFaceUp = true
+    @State var isFaceUp = false
     
     var body: some View {
         ZStack {
