@@ -10,13 +10,13 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
     
+    private let aspectRatio: CGFloat = 2/3
+    
     var body: some View {
         VStack {
             title
-            ScrollView {
-                cards
-                    .animation(.default, value: viewModel.cards)
-            }
+            cards
+                .animation(.default, value: viewModel.cards)
             Button("Shuffle") {
                 viewModel.shuffle()
             }
@@ -25,32 +25,29 @@ struct EmojiMemoryGameView: View {
         .padding()
     }
     
-    var title: some View {
+    private var title: some View {
         Text("Memorize!")
             .font(.largeTitle)
     }
     
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards) { card in
-                CardView(card)
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
-            }
+    private var cards: some View {
+        AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
+            CardView(card)
+                .padding(4)
+                .onTapGesture {
+                    viewModel.choose(card)
+                }
         }
         .foregroundColor(.orange)
     }
     
-    func themeSelector(toTheme newTheme: EmojiMemoryGame.Theme, image: Image) -> some View{
+    private func themeSelector(toTheme newTheme: EmojiMemoryGame.Theme, image: Image) -> some View{
         VStackLabeledButton(label: newTheme.rawValue, image: image) {
             viewModel.changeTheme(to: newTheme)
         }
     }
     
-    var themes: some View {
+    private var themes: some View {
         HStack(spacing: 50) {
             themeSelector(toTheme: .faces, image: Image(systemName: "face.smiling"))
             themeSelector(toTheme: .animals, image: Image(systemName: "hare"))
@@ -82,7 +79,7 @@ struct VStackLabeledButton: View {
 }
 
 struct CardView: View {
-    let card: MemoryGame<String>.Card
+    private let card: MemoryGame<String>.Card
     
     init(_ card: MemoryGame<String>.Card) {
         self.card = card

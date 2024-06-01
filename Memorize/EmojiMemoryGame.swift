@@ -9,7 +9,7 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     private static func createMemoryGame(fromTheme theme: Theme) -> MemoryGame<String> {
-        let game = MemoryGame(numberOfPairsOfCards: 8) { pairIndex in
+        let game = MemoryGame(numberOfPairsOfCards: 12) { pairIndex in
             if theme.emojis.indices.contains(pairIndex) {
                 return theme.emojis[pairIndex]
             } else {
