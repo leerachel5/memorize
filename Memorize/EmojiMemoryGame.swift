@@ -9,14 +9,13 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
     private static func createMemoryGame(fromTheme theme: Theme) -> MemoryGame<String> {
-        var game = MemoryGame(numberOfPairsOfCards: 8) { pairIndex in
+        let game = MemoryGame(numberOfPairsOfCards: 8) { pairIndex in
             if theme.emojis.indices.contains(pairIndex) {
                 return theme.emojis[pairIndex]
             } else {
                 return "⁉️"
             }
         }
-        game.shuffle()
         return game
     }
     
@@ -38,7 +37,7 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func choose(_ card: MemoryGame<String>.Card) {
-        model.choose(card: card)
+        model.choose(card)
     }
     
     func changeTheme(to newTheme: Theme) {
@@ -52,12 +51,9 @@ class EmojiMemoryGame: ObservableObject {
         
         var emojis: [String] {
             switch self {
-            case .faces:
-                return ["😃", "☹️", "🥹", "😂", "😉", "😘", "🤩", "😏", "😏", "😱", "😡", "😭"]
-            case .animals:
-                return ["🐶", "🐱", "🐭", "🐰", "🐸", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮"]
-            case .weather:
-                return ["🌩️", "🌨️", "🌤️", "☀️", "⛅️", "☁️", "🌧️", "🌦️", "⛈️"]
+            case .faces: return ["😃", "☹️", "🥹", "😂", "😉", "😘", "🤩", "😏", "😏", "😱", "😡", "😭"]
+            case .animals: return ["🐶", "🐱", "🐭", "🐰", "🐸", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮"]
+            case .weather: return ["🌩️", "🌨️", "🌤️", "☀️", "⛅️", "☁️", "🌧️", "🌦️", "⛈️"]
             }
         }
     }
