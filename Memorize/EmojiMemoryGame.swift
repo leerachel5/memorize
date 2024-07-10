@@ -11,7 +11,7 @@ class EmojiMemoryGame: ObservableObject {
     typealias Card = MemoryGame<String>.Card
     
     private static func createMemoryGame(fromTheme theme: Theme) -> MemoryGame<String> {
-        let game = MemoryGame(numberOfPairsOfCards: 12) { pairIndex in
+        let game = MemoryGame(numberOfPairsOfCards: 2) { pairIndex in
             if theme.emojis.indices.contains(pairIndex) {
                 return theme.emojis[pairIndex]
             } else {
