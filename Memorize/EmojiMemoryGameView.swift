@@ -11,11 +11,13 @@ struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
     
     private let aspectRatio: CGFloat = 2/3
+    private let spacing: CGFloat = 4
     
     var body: some View {
         VStack {
             title
             cards
+                .foregroundColor(viewModel.color)
                 .animation(.default, value: viewModel.cards)
             Button("Shuffle") {
                 viewModel.shuffle()
@@ -33,12 +35,11 @@ struct EmojiMemoryGameView: View {
     private var cards: some View {
         AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
             CardView(card)
-                .padding(4)
+                .padding(spacing)
                 .onTapGesture {
                     viewModel.choose(card)
                 }
         }
-        .foregroundColor(.orange)
     }
     
     private func themeSelector(toTheme newTheme: EmojiMemoryGame.Theme, image: Image) -> some View{

@@ -29,7 +29,11 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     var cards: Array<Card> {
-        return model.cards
+        model.cards
+    }
+    
+    var color: Color {
+        .orange
     }
     
     // MARK: - Intents
